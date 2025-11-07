@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Paper, Button, Accordion, AccordionSummary,
   AccordionDetails, TextField, FormControlLabel, Radio, Table, TableBody,
-  TableCell, TableContainer, TableHead, TableRow, Grid, Link
+  TableCell, TableContainer, TableHead, TableRow, Link
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './AttributeReviewView.module.css';
 
@@ -122,16 +123,16 @@ const AttributeReviewView: React.FC = () => {
               <Box sx={{ marginTop: 2 }}>
                 <Typography sx={{ mb: 1 }}><strong>Grounding Quote:</strong> "{item.groundingQuote}"</Typography>
                 <Grid container spacing={1}>
-                  <Grid item xs={3}>
+                  <Grid size={{ xs: 3 }}>
                     <Typography><strong>Grounding Website:</strong></Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid size={{ xs: 9 }}>
                     <Typography>{item.groundingWebsite}</Typography>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid size={{ xs: 3 }}>
                     <Typography><strong>Grounding Links:</strong></Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid size={{ xs: 9 }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       {item.groundingLinks.split(',').map((link, index) =>
                         link ? (
