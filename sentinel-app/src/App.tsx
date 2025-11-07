@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { CssBaseline, Container, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import CsvUploader from './components/CsvUploader';
 import MainView from './components/MainView';

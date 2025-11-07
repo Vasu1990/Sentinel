@@ -198,16 +198,16 @@ const ItemReviewView: React.FC = () => {
               <Box sx={{ marginTop: 2 }}>
                 <Typography sx={{ mb: 1 }}><strong>Grounding Quote:</strong> "{attr.groundingQuote}"</Typography>
                 <Grid container spacing={1}>
-                  <Grid item xs={3}>
+                  <Grid size={{ xs: 3 }}>
                     <Typography><strong>Grounding Website:</strong></Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid size={{ xs: 9 }}>
                     <Typography>{attr.groundingWebsite}</Typography>
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid size={{ xs: 3 }}>
                     <Typography><strong>Grounding Links:</strong></Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid size={{ xs: 9 }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       {attr.groundingLinks.split(',').map((link, index) =>
                         link ? (
