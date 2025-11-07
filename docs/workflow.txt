@@ -1,0 +1,135 @@
+Implementation Workflow: Sentinel Review Dashboard
+
+  ---
+  Phase 1: Project Setup & Backend Foundation
+
+  Epic: Project Initialization
+
+  - Story: Setup Core Project Structure
+    - [DevOps] Initialize a new Tauri project with the React
+  (TypeScript) template.
+    - [DevOps] Configure tauri.conf.json with application details
+  (name, version, permissions).
+    - [Frontend] Install primary frontend dependencies: @mui/material,
+   @mui/x-data-grid, react-router-dom.
+    - [Backend] Add Rust dependencies for SQLite (rusqlite) and CSV
+  parsing (csv) to Cargo.toml.
+  - Story: Establish Database Layer
+    - [Backend] Create a Rust module (database.rs) to manage the
+  SQLite connection pool (e.g., using r2d2).
+    - [Backend] Implement a Tauri command (init_database) that creates
+   the product_attributes table according to the specified schema if
+  it doesn't exist. This command should be called on app startup.
+
+  ---
+  Phase 2: Data Ingestion & Main Dashboard
+
+  Epic: Data Ingestion
+
+  - Story: Implement CSV Upload and Processing
+    - [Backend] Create a Tauri command (ingest_csv) that accepts a
+  file path.
+    - [Backend] In the ingest_csv command, implement the full
+  ingestion pipeline:
+        i. Clear the product_attributes table.
+      ii. Parse the CSV file.
+      iii. Perform a high-performance, bulk transactional load into
+  the SQLite database.
+      iv. Set review_status to UNREVIEWED for all imported records.
+    - [Backend] Immediately after the bulk load, create the three
+  mandatory indexes (idx_item_id, idx_review_status,
+  idx_long_attribute).
+    - [Frontend] Create the CsvUploader React component with
+  client-side validation for .csv file types.
+    - [Frontend] On file selection, invoke the ingest_csv Tauri
+  command and provide user feedback.
+
+  Epic: Summary Dashboard UI
+
+  - Story: Develop Backend Queries for Dashboard
+    - [Backend] Create a Tauri command (get_summary_stats) to fetch
+  real-time counts (total items, reviewed, unreviewed).
+    - [Backend] Create a Tauri command (get_item_list) for the main
+  data grid, returning a paginated list of unique items with their
+  name, attribute count, and status.
+  - Story: Build the Main Dashboard View
+    - [Frontend] Create the MainView component to serve as the
+  application's central hub.
+    - [Frontend] Implement the SummaryStats component to display data
+  from get_summary_stats.
+    - [Frontend] Implement the ItemList component using the MUI
+  DataGrid, populating it with data from get_item_list.
+    - [Frontend] Set up routing so that clicking a row in the ItemList
+   navigates the user to the ItemReviewView with the correct item_id.
+
+  ---
+  Phase 3: Core Review Workflows
+
+  Epic: Item-Level Review
+
+  - Story: Enable Item-Specific Data Handling
+    - [Backend] Create a Tauri command (get_attributes_for_item) to
+  fetch all attributes for a given item_id.
+    - [Backend] Create a Tauri command (update_item_attributes) that
+  performs a single transactional update for all modified attributes
+  of an item and updates its master review_status to REVIEWED.
+  - Story: Build the Item Review Interface
+    - [Frontend] Create the ItemReviewView component.
+    - [Frontend] On view load, fetch and display all attributes for
+  the selected item_id.
+    - [Frontend] Implement the attribute table with an editable Final 
+  Value input field.
+    - [Frontend] Add the interaction logic where clicking a source
+  value (PIM, Vody, etc.) auto-fills the Final Value input.
+    - [Frontend] Implement client-side controls to filter attributes
+  by status (All, Auto Approved, etc.).
+    - [Frontend] Implement the "Save" action to invoke the
+  update_item_attributes command with all modified data for that item.
+
+  Epic: Attribute-Level Review
+
+  - Story: Enable Bulk Attribute Data Handling
+    - [Backend] Create a Tauri command (get_unique_attribute_names) to
+   populate the selection dropdown.
+    - [Backend] Create a Tauri command (get_items_for_attribute) to
+  fetch all items that contain a specific attribute_display_name.
+    - [Backend] Create a Tauri command (update_attributes_bulk) that
+  performs a single transactional update for multiple modified
+  attributes across different items.
+  - Story: Build the Attribute Review Interface
+    - [Frontend] Create the AttributeReviewView component.
+    - [Frontend] Use an MUI Autocomplete or Select component for
+  choosing the attribute_display_name.
+    - [Frontend] On selection, fetch data and render a scrollable list
+   of ReviewCard components, where each card represents one item.
+    - [Frontend] Implement the "Save" action to invoke the
+  update_attributes_bulk command with all modified data currently
+  visible.
+
+  ---
+  Phase 4: Core Features & Finalization
+
+  Epic: Application-Wide UX and State
+
+  - Story: Implement Global State and Error Handling
+    - [Frontend] Implement a centralized useDBStatus hook or a state
+  management solution (e.g., Zustand) to track isLoading, isError, and
+   success states for all Tauri IPC calls.
+    - [Frontend] Create a global LoadingBackdrop component that
+  displays a spinner when isLoading is true.
+    - [Frontend] Implement a global MUI Snackbar component to display
+  user-facing errors and success notifications from a central state.
+
+  Epic: Data Export
+
+  - Story: Implement Final CSV Export
+    - [Backend] Create a Tauri command (export_csv).
+    - [Backend] Inside the command, implement the logic to:
+        i. Query all records from product_attributes.
+      ii. Transform the data back into the original CSV structure,
+  including the final_value.
+      iii. Use the Tauri fs API to open a "save file" dialog and write
+   the CSV file to disk.
+    - [Frontend] Add an "Export & Save" button to the MainView.
+    - [Frontend] Wire the button to invoke the export_csv command and
+  use the global Snackbar for success/failure notifications.

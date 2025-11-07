@@ -1,0 +1,10 @@
+.summaryContainer {
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}

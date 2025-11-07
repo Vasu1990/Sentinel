@@ -1,0 +1,24 @@
+.attributeReviewContainer {
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.accordionSummaryValue {
+  color: dimgray;
+}
+
+.descriptionContainer {
+  margin-top: 1rem;
+}
+
+.saveContainer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
